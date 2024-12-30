@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>prog7</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"
+        integrity="sha512-a+SUDuwNzXDvz4XrIcXHuCf089/iJAoN4lmrXJg18XnduKK6YlDHNRalv4yd1N40OKI80tFidF+rqTFKGPoWFQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    <h1>string to hash</h1>
+    <input type="text" id="inputstring">
+    <button onclick="stringtohash()">convert</button>
+    <div id="outhash"></div>
+    <script>
+        function stringtohash() {
+            const text = document.getElementById('inputstring').value;
+            const hash = CryptoJS.MD5(text).toString();
+            document.getElementById('outhash').innerHTML = `HASH:${hash}`;
+        }
+    </script>
+    <h1>json to obj</h1>
+    <input type="text" id="inputtext">
+    <button onclick="texttoobj()">convert</button>
+    <div id="out"></div>
+    <script>
+        function texttoobj() {
+            try {
+                const jsobj = JSON.parse(document.getElementById('inputtext').value);
+                document.getElementById('out').innerHTML = `<pre>${JSON.stringify(jsobj, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('out').innerHTML = 'invalid json';
+            }
+        }
+    </script>
+    <h1>json to date</h1>
+    <input type="text" id="inputdate">
+    <button onclick="texttodate()">convert</button>
+    <div id="outdate"></div>
+    <script>
+        function texttodate() {
+            try {
+                const jsobj = JSON.parse(document.getElementById('inputdate').value);
+                const date =new Date(jsobj.date);
+                document.getElementById('outdate').innerHTML =`Date:${date.toString()}`;
+            } catch (error) {
+                document.getElementById('outdate').innerHTML = 'invalid json';
+            }
+        }
+    </script>
+    <h1>JSon to csv</h1>
+    <textarea name="" id="jsoninput" rows="10" cols="30"></textarea>
+    <button onclick="jsontocsv()">convert</button>
+    <textarea name="" id="csvoutput" rows="10" cols="30"></textarea>
+    <script>
+        function jsontocsv(){
+            try {
+                const jsArray=JSON.parse(document.getElementById('jsoninput').value);
+                const headers=Object.keys(jsArray[0]);
+                const csvrows=[
+                    headers.join(','),
+                    ...jsArray.map(obj =>headers.map(header =>obj[header]).join(','))
+                ];
+                document.getElementById('csvoutput').value=csvrows.join('\n');
+            } catch (error) {
+                document.getElementById('csvoutput').value='Invaid json';
+            }
+        }
+    </script>
+    <h1>csv to json</h1>
+    <textarea name="" id="csvinput" rows="10" cols="30"></textarea>
+    <button onclick="jsontocsvr()">convert</button>
+    <textarea name="" id="jsonoutput" rows="10" cols="30"></textarea>
+    <script>
+        function jsontocsvr(){
+            try {
+                const csvrows=document.getElementById('csvinput').value;
+                const lines=csvrows.split('\n');
+                const headers=lines[0].split(',');
+                const jsArray=[];
+                for(let i=1;i<lines.length;i++){
+                    const values=lines[i].split(',');
+                    const obj={};
+                    for(let j=0;j<headers.length;j++){
+                        obj[headers[j]]=values[j];
+                    }
+                    jsArray.push(obj);
+                }
+                document.getElementById('jsonoutput').value=JSON.stringify(jsArray,null,2);
+            } catch (error) {
+                document.getElementById('jsonoutput').value='Invaid json';
+            }
+        }
+    </script>
+</body>
+
+</html>
